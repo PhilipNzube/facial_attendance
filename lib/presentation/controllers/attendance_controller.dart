@@ -81,10 +81,11 @@ class AttendanceController extends ChangeNotifier {
         if (Platform.isAndroid) {
           var status = await Permission.storage.request();
           if (!status.isGranted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Storage permission required to save PDF.')),
+            CustomSnackbar.show(
+              context,
+              'Storage permission required to save PDF.',
             );
+
             return;
           }
           final directory = Directory('/storage/emulated/0/Download');
