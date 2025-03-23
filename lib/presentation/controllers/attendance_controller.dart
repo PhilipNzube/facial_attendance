@@ -109,7 +109,7 @@ class AttendanceController extends ChangeNotifier {
       }
     } catch (e) {
       print('Error generating PDF: $e');
-      CustomSnackbar.show(context, 'Error generating PDF: $e', isError: true);
+      CustomSnackbar.show(context, 'Error generating PDF', isError: true);
     }
   }
 

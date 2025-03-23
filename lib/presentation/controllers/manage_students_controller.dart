@@ -1020,7 +1020,7 @@ class ManageStudentController extends ChangeNotifier {
 
       _updateUploadProgress(100.0, "uploaded"); // Update progress
       if (isMatch) {
-        CustomSnackbar.show(context, 'Faces match! ✅');
+        //CustomSnackbar.show(context, 'Faces match! ✅');
         await database.update(
           'students',
           {
@@ -1029,13 +1029,14 @@ class ManageStudentController extends ChangeNotifier {
           where: 'randomId = ?',
           whereArgs: [student['randomId']],
         );
+        await loadStudents();
         //sendSingleStudentAttendance(index, context);
       } else {
-        CustomSnackbar.show(context, 'Faces do not match!', isError: true);
+        //CustomSnackbar.show(context, 'Faces do not match!', isError: true);
       }
     } catch (e) {
       print("Error: $e");
-      CustomSnackbar.show(context, "Error: $e", isError: true);
+      //CustomSnackbar.show(context, "Error: $e", isError: true);
     } finally {
       Navigator.of(navigatorKey.currentContext!).pop();
 
