@@ -181,6 +181,7 @@ void editStudentDialog(int index, BuildContext context) async {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          const Gap(10),
                           CustomTextField(
                             controller: surnameController,
                             label: 'Surname',
