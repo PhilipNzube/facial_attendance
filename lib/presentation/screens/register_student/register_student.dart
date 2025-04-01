@@ -36,216 +36,211 @@ class _RegisterStudentState extends State<RegisterStudent> {
       body: Stack(
         children: [
           const Background(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: registerStudentController.formKey,
-                      child: Column(
-                        children: [
-                          // Text(
-                          //   'Registration form of students from ${_schools.firstWhere((school) => school.id == _selectedSchool).schoolName}',
-                          // ),
-                          const Gap(20),
-                          CustomTextField(
-                            controller:
-                                registerStudentController.surnameController,
-                            label: 'Surname',
-                            validator: (value) =>
-                                value!.isEmpty ? 'Please enter surname' : null,
-                          ),
-                          const Gap(20),
-                          CustomTextField(
-                            controller:
-                                registerStudentController.firstNameController,
-                            label: 'Firstname',
-                            validator: (value) => value!.isEmpty
-                                ? 'Please enter firstname'
-                                : null,
-                          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: registerStudentController.formKey,
+                    child: Column(
+                      children: [
+                        // Text(
+                        //   'Registration form of students from ${_schools.firstWhere((school) => school.id == _selectedSchool).schoolName}',
+                        // ),
+                        const Gap(20),
+                        CustomTextField(
+                          controller:
+                              registerStudentController.surnameController,
+                          label: 'Surname',
+                          validator: (value) =>
+                              value!.isEmpty ? 'Please enter surname' : null,
+                        ),
+                        const Gap(20),
+                        CustomTextField(
+                          controller:
+                              registerStudentController.firstNameController,
+                          label: 'Firstname',
+                          validator: (value) =>
+                              value!.isEmpty ? 'Please enter firstname' : null,
+                        ),
 
-                          const Gap(20),
-                          CustomTextField(
-                            controller:
-                                registerStudentController.middleNameController,
-                            label: 'Middlename',
-                          ),
+                        const Gap(20),
+                        CustomTextField(
+                          controller:
+                              registerStudentController.middleNameController,
+                          label: 'Middlename',
+                        ),
 
-                          const Gap(20),
+                        const Gap(20),
 
-                          CustomDropdown<String>(
-                            value:
-                                registerStudentController.selectedPresentLevel,
-                            label: 'Present Level',
-                            items: const [
-                              '100 Level',
-                              '200 Level',
-                              '300 Level',
-                              '400 Level'
-                            ],
-                            onChanged: (value) {
-                              registerStudentController
-                                  .setSelectedPresentLevel(value!);
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please select a present level';
-                              }
-                              return null;
-                            },
-                          ),
+                        CustomDropdown<String>(
+                          value: registerStudentController.selectedPresentLevel,
+                          label: 'Present Level',
+                          items: const [
+                            '100 Level',
+                            '200 Level',
+                            '300 Level',
+                            '400 Level'
+                          ],
+                          onChanged: (value) {
+                            registerStudentController
+                                .setSelectedPresentLevel(value!);
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select a present level';
+                            }
+                            return null;
+                          },
+                        ),
 
-                          const Gap(20),
+                        const Gap(20),
 
-                          CustomDropdown<String>(
-                            value: registerStudentController.selectedDepartment,
-                            label: 'Department',
-                            items: const [
-                              'Computer Science',
-                              'Mathematics',
-                              'Statistics',
-                              'Physics'
-                            ],
-                            onChanged: (value) {
-                              registerStudentController
-                                  .setSelectedDepartment(value!);
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please select a department';
-                              }
-                              return null;
-                            },
-                          ),
+                        CustomDropdown<String>(
+                          value: registerStudentController.selectedDepartment,
+                          label: 'Department',
+                          items: const [
+                            'Computer Science',
+                            'Mathematics',
+                            'Statistics',
+                            'Physics'
+                          ],
+                          onChanged: (value) {
+                            registerStudentController
+                                .setSelectedDepartment(value!);
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select a department';
+                            }
+                            return null;
+                          },
+                        ),
 
-                          const Gap(20),
+                        const Gap(20),
 
-                          GestureDetector(
-                            onTap: () {
-                              showPassportDialog(context);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: 150,
-                              margin: const EdgeInsets.symmetric(vertical: 10),
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Upload Passport Photo',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  if (registerStudentController
-                                      .passportImage.path.isNotEmpty)
-                                    Text(
-                                      'Passport uploaded: ${path.basename(registerStudentController.passportImage.path)}',
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.grey),
-                                    ),
-                                  if (registerStudentController
-                                      .passportImage.path.isNotEmpty)
-                                    TextButton(
-                                      onPressed: () {
-                                        registerStudentController
-                                            .setPassportImage(File(''));
-                                      },
-                                      child: const Text('Delete Passport',
-                                          style: TextStyle(color: Colors.red)),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const Gap(20),
-                          Container(
+                        GestureDetector(
+                          onTap: () {
+                            showPassportDialog(context);
+                          },
+                          child: Container(
                             width: double.infinity,
-                            height: 60,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: ElevatedButton(
-                              onPressed: registerStudentController.isLoading
-                                  ? null
-                                  : () {
-                                      if (registerStudentController
-                                          .passportImage.path.isEmpty) {
-                                        CustomSnackbar.show(
-                                          context,
-                                          'Please upload a passport photo',
-                                          isError: true,
-                                        );
-
-                                        return;
-                                      }
-
-                                      if (registerStudentController
-                                          .formKey.currentState!
-                                          .validate()) {
-                                        registerStudentController
-                                            .insertData(context);
-                                      }
-                                    },
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                    if (states.contains(WidgetState.pressed)) {
-                                      return Colors.white;
-                                    }
-                                    return const Color(0xFFF76800);
-                                  },
+                            height: 150,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Upload Passport Photo',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                foregroundColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                    if (states.contains(WidgetState.pressed)) {
-                                      return const Color(0xFFF76800);
-                                    }
-                                    return Colors.white;
-                                  },
-                                ),
-                                elevation: WidgetStateProperty.all<double>(4.0),
-                                shape: WidgetStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  const RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 3,
-                                      color: Color(0xFFF76800),
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15)),
+                                if (registerStudentController
+                                    .passportImage.path.isNotEmpty)
+                                  Text(
+                                    'Passport uploaded: ${path.basename(registerStudentController.passportImage.path)}',
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.grey),
                                   ),
-                                ),
-                              ),
-                              child: registerStudentController.isLoading
-                                  ? const CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white))
-                                  : const Text(
-                                      'Register',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                if (registerStudentController
+                                    .passportImage.path.isNotEmpty)
+                                  TextButton(
+                                    onPressed: () {
+                                      registerStudentController
+                                          .setPassportImage(File(''));
+                                    },
+                                    child: const Text('Delete Passport',
+                                        style: TextStyle(color: Colors.red)),
+                                  ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        const Gap(20),
+                        Container(
+                          width: double.infinity,
+                          height: 60,
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: ElevatedButton(
+                            onPressed: registerStudentController.isLoading
+                                ? null
+                                : () {
+                                    if (registerStudentController
+                                        .passportImage.path.isEmpty) {
+                                      CustomSnackbar.show(
+                                        context,
+                                        'Please upload a passport photo',
+                                        isError: true,
+                                      );
+
+                                      return;
+                                    }
+
+                                    if (registerStudentController
+                                        .formKey.currentState!
+                                        .validate()) {
+                                      registerStudentController
+                                          .insertData(context);
+                                    }
+                                  },
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.resolveWith<Color>(
+                                (Set<WidgetState> states) {
+                                  if (states.contains(WidgetState.pressed)) {
+                                    return Colors.white;
+                                  }
+                                  return const Color(0xFFF76800);
+                                },
+                              ),
+                              foregroundColor:
+                                  WidgetStateProperty.resolveWith<Color>(
+                                (Set<WidgetState> states) {
+                                  if (states.contains(WidgetState.pressed)) {
+                                    return const Color(0xFFF76800);
+                                  }
+                                  return Colors.white;
+                                },
+                              ),
+                              elevation: WidgetStateProperty.all<double>(4.0),
+                              shape: WidgetStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                const RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 3,
+                                    color: Color(0xFFF76800),
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15)),
+                                ),
+                              ),
+                            ),
+                            child: registerStudentController.isLoading
+                                ? const CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white))
+                                : const Text(
+                                    'Register',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
