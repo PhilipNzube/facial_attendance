@@ -28,6 +28,25 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const Spacer(),
+            GestureDetector(
+              onTap: () => showLogoutDialog(context, homeController.logout),
+              child: Row(
+                children: [
+                  const IconButton(
+                    icon: const Icon(Icons.exit_to_app),
+                    onPressed: null,
+                  ),
+                  Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

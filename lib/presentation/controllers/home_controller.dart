@@ -1,3 +1,4 @@
+import 'package:facial_attendance/presentation/screens/Auth/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:async';
@@ -74,12 +75,15 @@ class HomeController extends ChangeNotifier {
   }
 
   Future<void> logout(BuildContext context) async {
-    try {
-      if (context.mounted) {
-        Navigator.pushReplacementNamed(context, "/login");
-      }
-    } catch (e) {
-      print("Logout error: $e");
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(
+          key: UniqueKey(),
+        ),
+      ),
+    );
+    notifyListeners();
+    print("Logout");
   }
 }

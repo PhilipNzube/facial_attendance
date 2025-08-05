@@ -1,3 +1,4 @@
+import 'package:facial_attendance/main.dart';
 import 'package:flutter/material.dart';
 
 void showLogoutDialog(
@@ -46,12 +47,12 @@ void showLogoutDialog(
                             setState(() => isLoading = true);
 
                             try {
-                              await onLogout(context);
+                              await onLogout(navigatorKey.currentContext!);
                             } catch (e) {
                               print("Logout failed: $e");
                             } finally {
                               if (dialogContext.mounted) {
-                                Navigator.of(dialogContext).pop();
+                                //Navigator.of(dialogContext).pop();
                               }
                             }
                           },
