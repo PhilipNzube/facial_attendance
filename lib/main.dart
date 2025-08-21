@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
 import 'core/themes/app_theme.dart';
 import 'presentation/controllers/attendance_controller.dart';
@@ -33,9 +35,29 @@ void main() async {
   // Initialize the database
   await DBHelper().database;
 
+  // Request storage permissions for Android
+  if (Platform.isAndroid) {
+    await _requestStoragePermissions();
+  }
+
   final bool isLoggedIn = accessToken != null;
 
   runApp(MyApp(isLoggedIn: isLoggedIn));
+}
+
+Future<void> _requestStoragePermissions() async {
+  try {
+    // Request storage permissions
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+      Permission.manageExternalStorage,
+    ].request();
+    
+    print('Storage permission status: ${statuses[Permission.storage]}');
+    print('Manage external storage permission status: ${statuses[Permission.manageExternalStorage]}');
+  } catch (e) {
+    print('Error requesting permissions: $e');
+  }
 }
 
 class MyApp extends StatelessWidget {
