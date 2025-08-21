@@ -52,9 +52,10 @@ Future<void> _requestStoragePermissions() async {
       Permission.storage,
       Permission.manageExternalStorage,
     ].request();
-    
+
     print('Storage permission status: ${statuses[Permission.storage]}');
-    print('Manage external storage permission status: ${statuses[Permission.manageExternalStorage]}');
+    print(
+        'Manage external storage permission status: ${statuses[Permission.manageExternalStorage]}');
   } catch (e) {
     print('Error requesting permissions: $e');
   }
