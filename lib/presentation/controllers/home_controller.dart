@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:async';
 import '../../data/database/general_db/db_helper.dart';
+import 'package:provider/provider.dart';
+import 'register_student_controller.dart';
+import 'manage_students_controller.dart';
 
 class HomeController extends ChangeNotifier {
   final storage = const FlutterSecureStorage();
@@ -75,15 +78,27 @@ class HomeController extends ChangeNotifier {
   }
 
   Future<void> logout(BuildContext context) async {
-    Navigator.pushReplacement(
+    // Clear secure storage
+    await storage.deleteAll();
+
+    // Clear any cached data
+    isRefreshing = false;
+    userFullName = "User";
+    greeting = "";
+    studentStats = {};
+
+    // Navigate to login page with a fresh instance
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => LoginPage(
           key: UniqueKey(),
         ),
       ),
+      (route) => false, // Remove all previous routes
     );
+
     notifyListeners();
-    print("Logout");
+    print("Logout completed");
   }
 }

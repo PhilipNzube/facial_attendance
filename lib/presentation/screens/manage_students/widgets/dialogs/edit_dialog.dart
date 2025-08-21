@@ -175,9 +175,7 @@ void editStudentDialog(int index, BuildContext context) async {
                   title: Text('Edit ${student['surname']}'),
                   content: SingleChildScrollView(
                     child: Form(
-                      key: Provider.of<ManageStudentController>(context,
-                              listen: false)
-                          .formKey, // Use the GlobalKey here
+                      key: GlobalKey<FormState>(), // Use a local form key
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

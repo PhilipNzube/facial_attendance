@@ -21,7 +21,8 @@ class RegisterStudentController extends ChangeNotifier {
   final BuildContext context;
   final Function(bool) syncingSchools;
 
-  final _formKey = GlobalKey<FormState>();
+  // Generate a unique key for each instance
+  late final GlobalKey<FormState> _formKey;
   final _schoolIdController = TextEditingController();
   final _surnameController = TextEditingController();
   final _studentNinController = TextEditingController();
@@ -115,6 +116,7 @@ class RegisterStudentController extends ChangeNotifier {
   String? _selectedSchoolName;
 
   RegisterStudentController(this.context, {required this.syncingSchools}) {
+    _formKey = GlobalKey<FormState>();
     _initialize(context);
   }
 
@@ -126,6 +128,7 @@ class RegisterStudentController extends ChangeNotifier {
   bool get resync => _resync;
   String? get selectedSchool => _selectedSchool;
   GlobalKey<FormState> get formKey => _formKey;
+
   String? get selectedGender => _selectedGender;
   List<String> get gender => _gender;
   String? get selectedNationality => _selectedNationality;

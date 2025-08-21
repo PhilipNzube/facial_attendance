@@ -76,7 +76,8 @@ class ManageStudentController extends ChangeNotifier {
   String? _tempSelectedSchool;
   ValueNotifier<double> _uploadProgressNotifier = ValueNotifier(0.0);
   ValueNotifier<String> _uploadTextNotifier = ValueNotifier('');
-  final _formKey = GlobalKey<FormState>();
+  // Generate a unique key for each instance
+  late final GlobalKey<FormState> _formKey;
   ScrollController _scrollController = ScrollController();
   bool _isScrolledToTop = true;
   final storage = FlutterSecureStorage();
@@ -127,6 +128,7 @@ class ManageStudentController extends ChangeNotifier {
 
   // Public Getters
   GlobalKey<FormState> get formKey => _formKey;
+
   bool get isLoading => _isLoading;
   List<Map<String, Object?>> get students => _students;
   ValueNotifier<double> get uploadProgressNotifier => _uploadProgressNotifier;
@@ -231,6 +233,7 @@ class ManageStudentController extends ChangeNotifier {
       apiKey: ApiKeys.cloudinaryApiKey,
       apiSecret: ApiKeys.cloudinaryApiSecret,
     );
+    _formKey = GlobalKey<FormState>(); // Initialize the form key
     _scrollController.addListener(() {
       if (_scrollController.offset == 0) {
         _isScrolledToTop = true;

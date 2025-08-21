@@ -26,7 +26,13 @@ void showUploadProgressDialog(BuildContext context) {
                             listen: false)
                         .uploadProgressNotifier,
                     builder: (context, value, child) {
-                      return LinearProgressIndicator(value: value / 100);
+                      return LinearProgressIndicator(
+                        value: value / 100,
+                        backgroundColor:
+                            const Color(0xFFF5F5F5), // Almost white background
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(Colors.blue),
+                      );
                     },
                   ),
                   const Gap(20),

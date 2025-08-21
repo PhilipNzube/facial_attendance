@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_theme.dart';
 
 class CustomDropdown<T> extends StatelessWidget {
   final T? value;
@@ -22,20 +23,50 @@ class CustomDropdown<T> extends StatelessWidget {
       value: value,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 16, color: Colors.grey),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
+        labelStyle: const TextStyle(
+          fontSize: 14,
+          color: AppTheme.textSecondary,
+          fontFamily: 'Inter',
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppTheme.borderColor),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppTheme.borderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppTheme.errorColor),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        filled: true,
+        fillColor: AppTheme.backgroundColor,
       ),
-      style: const TextStyle(fontSize: 16, color: Colors.black),
-      dropdownColor: Colors.white,
+      style: const TextStyle(
+        fontSize: 16,
+        color: AppTheme.textPrimary,
+        fontFamily: 'Inter',
+      ),
+      dropdownColor: AppTheme.surfaceColor,
       items: items.map((T item) {
         return DropdownMenuItem<T>(
           value: item,
-          child: Text(item.toString()),
+          child: Text(
+            item.toString(),
+            style: const TextStyle(
+              color: AppTheme.textPrimary,
+              fontFamily: 'Inter',
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
         );
       }).toList(),
       onChanged: onChanged,

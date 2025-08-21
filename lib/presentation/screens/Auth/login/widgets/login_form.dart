@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/themes/app_theme.dart';
+import '../../../../../core/widgets/modern_button.dart';
 
-import '../../../../../core/widgets/custom_gap.dart';
-
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController passcodeController;
   final FocusNode emailFocusNode;
@@ -23,166 +23,182 @@ class LoginForm extends StatelessWidget {
   });
 
   @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  bool _obscurePassword = true;
+  final FocusNode _passwordFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        // Email Field
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.backgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: widget.emailFocusNode.hasFocus
+                  ? AppTheme.primaryColor
+                  : AppTheme.borderColor,
+              width: widget.emailFocusNode.hasFocus ? 2 : 1,
+            ),
+          ),
           child: TextFormField(
-            controller: emailController,
-            focusNode: emailFocusNode,
-            style: const TextStyle(fontSize: 16.0),
-            decoration: InputDecoration(
-              labelText: 'Email',
-              labelStyle: const TextStyle(
-                color: Colors.grey,
+            controller: widget.emailController,
+            focusNode: widget.emailFocusNode,
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppTheme.textPrimary,
+              fontFamily: 'Inter',
+            ),
+            decoration: const InputDecoration(
+              labelText: 'Email Address',
+              labelStyle: TextStyle(
+                color: AppTheme.textSecondary,
                 fontFamily: 'Inter',
-                fontSize: 12.0,
-                decoration: TextDecoration.none,
+                fontSize: 14,
               ),
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  width: 3,
-                  color: Colors.grey,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  width: 3,
-                  color: Color(0xFFF76800),
-                ),
-              ),
-              prefixIcon: IconButton(
-                icon: const Icon(
-                  Icons.mail,
-                  color: Colors.grey,
-                ),
-                onPressed: () {},
+              border: InputBorder.none,
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              prefixIcon: Icon(
+                Icons.email_outlined,
+                color: AppTheme.textSecondary,
+                size: 20,
               ),
             ),
-            cursorColor: const Color(0xFFF76800),
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (_) {
+              FocusScope.of(context).requestFocus(_passwordFocusNode);
+            },
           ),
         ),
-        Gap(MediaQuery.of(context).size.height * 0.05, useMediaQuery: false),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+
+        const SizedBox(height: 20),
+
+        // Password Field
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.backgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: _passwordFocusNode.hasFocus
+                  ? AppTheme.primaryColor
+                  : AppTheme.borderColor,
+              width: _passwordFocusNode.hasFocus ? 2 : 1,
+            ),
+          ),
           child: TextFormField(
-            controller: passcodeController,
-            style: const TextStyle(fontSize: 16.0),
+            controller: widget.passcodeController,
+            focusNode: _passwordFocusNode,
+            obscureText: _obscurePassword,
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppTheme.textPrimary,
+              fontFamily: 'Inter',
+            ),
             decoration: InputDecoration(
               labelText: 'Password',
               labelStyle: const TextStyle(
-                color: Colors.grey,
+                color: AppTheme.textSecondary,
                 fontFamily: 'Inter',
-                fontSize: 12.0,
-                decoration: TextDecoration.none,
+                fontSize: 14,
               ),
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  width: 3,
-                  color: Colors.grey,
-                ),
+              border: InputBorder.none,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              prefixIcon: const Icon(
+                Icons.lock_outlined,
+                color: AppTheme.textSecondary,
+                size: 20,
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  width: 3,
-                  color: Color(0xFFF76800),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscurePassword
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: AppTheme.textSecondary,
+                  size: 20,
                 ),
-              ),
-              prefixIcon: IconButton(
-                icon: const Icon(
-                  Icons.lock,
-                  color: Colors.grey,
-                ),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
               ),
             ),
-            cursorColor: const Color(0xFFF76800),
             keyboardType: TextInputType.number,
             maxLength: 6,
+            textInputAction: TextInputAction.done,
+            onFieldSubmitted: (_) => widget.onSubmit(),
           ),
         ),
-        Gap(MediaQuery.of(context).size.height * 0.05, useMediaQuery: false),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            children: [
+
+        const SizedBox(height: 32),
+
+        // Buttons Row
+        Row(
+          children: [
+            // Sign In Button
+            Expanded(
+              flex: 2,
+              child: ModernButton(
+                text: 'Sign In',
+                onPressed: widget.onSubmit,
+                isLoading: widget.isLoading,
+                icon: Icons.login,
+              ),
+            ),
+
+            const SizedBox(width: 16),
+
+            // Fingerprint Button
+            if (widget.showFingerprint)
               Expanded(
-                flex: showFingerprint ? 7 : 1,
-                child: SizedBox(
-                  height: (60 / MediaQuery.of(context).size.height) *
-                      MediaQuery.of(context).size.height,
-                  child: ElevatedButton(
-                    onPressed: onSubmit,
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.pressed)) {
-                            return Colors.white;
-                          }
-                          return const Color(0xFF02AA03);
-                        },
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentColor,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.accentColor.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
-                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.pressed)) {
-                            return const Color(0xFF02AA03);
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                      elevation: WidgetStateProperty.all<double>(4.0),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 3,
-                            color: Color(0xFF02AA03),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: widget.onFingerprintLogin,
+                      borderRadius: BorderRadius.circular(16),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.fingerprint,
+                            color: Colors.white,
+                            size: 24,
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                        ),
+                        ],
                       ),
                     ),
-                    child: isLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            'Login',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                   ),
                 ),
               ),
-              showFingerprint
-                  ? const Gap(10, isHorizontal: true)
-                  : const SizedBox(),
-              showFingerprint
-                  ? Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF02AA03),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: IconButton(
-                        iconSize: 45,
-                        icon:
-                            const Icon(Icons.fingerprint, color: Colors.white),
-                        onPressed: onFingerprintLogin,
-                      ),
-                    )
-                  : const SizedBox(),
-            ],
-          ),
+          ],
         ),
       ],
     );

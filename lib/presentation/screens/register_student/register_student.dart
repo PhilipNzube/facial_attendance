@@ -4,8 +4,9 @@ import 'package:flutter/services.dart'
     show FilteringTextInputFormatter, Uint8List, rootBundle;
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
-import '../../../core/widgets/custom_background.dart';
-import '../../../core/widgets/custom_gap.dart';
+import '../../../core/themes/app_theme.dart';
+import '../../../core/widgets/modern_card.dart';
+import '../../../core/widgets/modern_button.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../data/models/school_model.dart';
 import '../../controllers/register_student_controller.dart';
@@ -29,31 +30,93 @@ class _RegisterStudentState extends State<RegisterStudent> {
   Widget build(BuildContext context) {
     final registerStudentController =
         Provider.of<RegisterStudentController>(context);
+
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('Registration Form'),
+        title: const Text('Register Student'),
+        elevation: 0,
       ),
-      body: Stack(
-        children: [
-          const Background(),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(10),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(AppTheme.getResponsivePadding(context)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Section
+            ModernCard(
+              padding:
+                  EdgeInsets.all(AppTheme.getResponsiveCardPadding(context)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: AppTheme.isDesktop(context) ? 72 : 56,
+                        height: AppTheme.isDesktop(context) ? 72 : 56,
+                        decoration: BoxDecoration(
+                          gradient: AppTheme.primaryGradient,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          Icons.person_add,
+                          color: Colors.white,
+                          size: AppTheme.isDesktop(context) ? 36 : 28,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Student Registration',
+                              style: TextStyle(
+                                fontSize: AppTheme.getResponsiveFontSize(
+                                    context,
+                                    mobile: 20,
+                                    tablet: 24,
+                                    desktop: 28),
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.textPrimary,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Add a new student to the system',
+                              style: TextStyle(
+                                fontSize: AppTheme.getResponsiveFontSize(
+                                    context,
+                                    mobile: 14,
+                                    tablet: 16,
+                                    desktop: 18),
+                                color: AppTheme.textSecondary,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: registerStudentController.formKey,
+            ),
+
+            SizedBox(height: AppTheme.isDesktop(context) ? 32 : 24),
+
+            // Registration Form
+            Form(
+              key: registerStudentController.formKey,
+              child: Column(
+                children: [
+                  // Personal Information Section
+                  _buildSectionHeader('Personal Information'),
+
+                  ModernCard(
                     child: Column(
                       children: [
-                        // Text(
-                        //   'Registration form of students from ${_schools.firstWhere((school) => school.id == _selectedSchool).schoolName}',
-                        // ),
-                        const Gap(20),
                         CustomTextField(
                           controller:
                               registerStudentController.surnameController,
@@ -61,24 +124,32 @@ class _RegisterStudentState extends State<RegisterStudent> {
                           validator: (value) =>
                               value!.isEmpty ? 'Please enter surname' : null,
                         ),
-                        const Gap(20),
+                        SizedBox(height: AppTheme.isDesktop(context) ? 24 : 16),
                         CustomTextField(
                           controller:
                               registerStudentController.firstNameController,
-                          label: 'Firstname',
+                          label: 'First Name',
                           validator: (value) =>
-                              value!.isEmpty ? 'Please enter firstname' : null,
+                              value!.isEmpty ? 'Please enter first name' : null,
                         ),
-
-                        const Gap(20),
+                        SizedBox(height: AppTheme.isDesktop(context) ? 24 : 16),
                         CustomTextField(
                           controller:
                               registerStudentController.middleNameController,
-                          label: 'Middlename',
+                          label: 'Middle Name (Optional)',
                         ),
+                      ],
+                    ),
+                  ),
 
-                        const Gap(20),
+                  SizedBox(height: AppTheme.isDesktop(context) ? 32 : 24),
 
+                  // Academic Information Section
+                  _buildSectionHeader('Academic Information'),
+
+                  ModernCard(
+                    child: Column(
+                      children: [
                         CustomDropdown<String>(
                           value: registerStudentController.selectedPresentLevel,
                           label: 'Present Level',
@@ -99,9 +170,7 @@ class _RegisterStudentState extends State<RegisterStudent> {
                             return null;
                           },
                         ),
-
-                        const Gap(20),
-
+                        SizedBox(height: AppTheme.isDesktop(context) ? 24 : 16),
                         CustomDropdown<String>(
                           value: registerStudentController.selectedDepartment,
                           label: 'Department',
@@ -122,132 +191,163 @@ class _RegisterStudentState extends State<RegisterStudent> {
                             return null;
                           },
                         ),
-
-                        const Gap(20),
-
-                        GestureDetector(
-                          onTap: () {
-                            showPassportDialog(context);
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 150,
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  'Upload Passport Photo',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                if (registerStudentController
-                                    .passportImage.path.isNotEmpty)
-                                  Text(
-                                    'Passport uploaded: ${path.basename(registerStudentController.passportImage.path)}',
-                                    style: const TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                if (registerStudentController
-                                    .passportImage.path.isNotEmpty)
-                                  TextButton(
-                                    onPressed: () {
-                                      registerStudentController
-                                          .setPassportImage(File(''));
-                                    },
-                                    child: const Text('Delete Passport',
-                                        style: TextStyle(color: Colors.red)),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Gap(20),
-                        Container(
-                          width: double.infinity,
-                          height: 60,
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: ElevatedButton(
-                            onPressed: registerStudentController.isLoading
-                                ? null
-                                : () {
-                                    if (registerStudentController
-                                        .passportImage.path.isEmpty) {
-                                      CustomSnackbar.show(
-                                        context,
-                                        'Please upload a passport photo',
-                                        isError: true,
-                                      );
-
-                                      return;
-                                    }
-
-                                    if (registerStudentController
-                                        .formKey.currentState!
-                                        .validate()) {
-                                      registerStudentController
-                                          .insertData(context);
-                                    }
-                                  },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
-                                  if (states.contains(WidgetState.pressed)) {
-                                    return Colors.white;
-                                  }
-                                  return const Color(0xFFF76800);
-                                },
-                              ),
-                              foregroundColor:
-                                  WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
-                                  if (states.contains(WidgetState.pressed)) {
-                                    return const Color(0xFFF76800);
-                                  }
-                                  return Colors.white;
-                                },
-                              ),
-                              elevation: WidgetStateProperty.all<double>(4.0),
-                              shape: WidgetStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                const RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 3,
-                                    color: Color(0xFFF76800),
-                                  ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)),
-                                ),
-                              ),
-                            ),
-                            child: registerStudentController.isLoading
-                                ? const CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white))
-                                : const Text(
-                                    'Register',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
-                ),
+
+                  SizedBox(height: AppTheme.isDesktop(context) ? 32 : 24),
+
+                  // Passport Photo Section
+                  _buildSectionHeader('Passport Photo'),
+
+                  ModernCard(
+                    child: GestureDetector(
+                      onTap: () {
+                        showPassportDialog(context);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: AppTheme.isDesktop(context) ? 300 : 200,
+                        decoration: BoxDecoration(
+                          color: AppTheme.backgroundColor,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: AppTheme.borderColor,
+                            width: 2,
+                            style: BorderStyle.solid,
+                          ),
+                        ),
+                        child: registerStudentController
+                                .passportImage.path.isNotEmpty
+                            ? Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(14),
+                                    child: Image.file(
+                                      registerStudentController.passportImage,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.errorColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                        onPressed: () {
+                                          registerStudentController
+                                              .setPassportImage(File(''));
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.camera_alt_outlined,
+                                    size: AppTheme.isDesktop(context) ? 64 : 48,
+                                    color: AppTheme.textTertiary,
+                                  ),
+                                  SizedBox(
+                                      height: AppTheme.isDesktop(context)
+                                          ? 16
+                                          : 12),
+                                  Text(
+                                    'Upload Passport Photo',
+                                    style: TextStyle(
+                                      fontSize: AppTheme.getResponsiveFontSize(
+                                          context,
+                                          mobile: 16,
+                                          tablet: 18,
+                                          desktop: 20),
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.textPrimary,
+                                      fontFamily: 'Inter',
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Tap to select photo',
+                                    style: TextStyle(
+                                      fontSize: AppTheme.getResponsiveFontSize(
+                                          context,
+                                          mobile: 14,
+                                          tablet: 16,
+                                          desktop: 18),
+                                      color: AppTheme.textSecondary,
+                                      fontFamily: 'Inter',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: AppTheme.isDesktop(context) ? 40 : 32),
+
+                  // Submit Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ModernButton(
+                      text: 'Register Student',
+                      onPressed: registerStudentController.isLoading
+                          ? null
+                          : () {
+                              if (registerStudentController
+                                  .passportImage.path.isEmpty) {
+                                CustomSnackbar.show(
+                                  context,
+                                  'Please upload a passport photo',
+                                  isError: true,
+                                );
+                                return;
+                              }
+
+                              if (registerStudentController
+                                  .formKey.currentState!
+                                  .validate()) {
+                                registerStudentController.insertData(context);
+                              }
+                            },
+                      isLoading: registerStudentController.isLoading,
+                      icon: Icons.person_add,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppTheme.isDesktop(context) ? 16 : 12),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: AppTheme.getResponsiveFontSize(context,
+              mobile: 18, tablet: 20, desktop: 24),
+          fontWeight: FontWeight.bold,
+          color: AppTheme.textPrimary,
+          fontFamily: 'Inter',
+        ),
       ),
     );
   }
