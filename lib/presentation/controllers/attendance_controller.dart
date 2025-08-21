@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../data/database/general_db/db_helper.dart';
 import '../../core/widgets/custom_snackbar.dart';
@@ -70,47 +71,126 @@ class AttendanceController extends ChangeNotifier {
         ),
       );
 
-      String? outputPath;
-      try {
-        outputPath = await FilePicker.platform.getDirectoryPath();
-      } catch (e) {
-        print('FilePicker error: $e');
-      }
+      // Generate PDF bytes
+      final pdfBytes = await pdf.save();
 
-      if (outputPath == null) {
-        if (Platform.isAndroid) {
-          var status = await Permission.storage.request();
-          if (!status.isGranted) {
-            CustomSnackbar.show(
-              context,
-              'Storage permission required to save PDF.',
+      if (Platform.isAndroid) {
+        // Show options to user
+        final choice = await _showAndroidSaveOptions(context);
+
+        if (choice == 'share') {
+          // Share approach - works on all Android versions
+          final directory = await getApplicationDocumentsDirectory();
+          final file = File('${directory.path}/attendance.pdf');
+          await file.writeAsBytes(pdfBytes);
+
+          if (await file.exists()) {
+            await Share.shareXFiles(
+              [XFile(file.path)],
+              text: 'Attendance Report',
+              subject: 'Attendance Report PDF',
             );
 
-            return;
+            CustomSnackbar.show(
+              context,
+              'PDF generated successfully! You can now share or save it.',
+            );
+          } else {
+            CustomSnackbar.show(context, 'Failed to generate PDF.',
+                isError: true);
           }
-          final directory = Directory('/storage/emulated/0/Download');
-          outputPath = directory.path;
-        } else {
+        } else if (choice == 'downloads') {
+          // Try to save to Downloads folder (may not work on Android 10+)
+          try {
+            final directory = Directory('/storage/emulated/0/Download');
+            if (await directory.exists()) {
+              final file = File('${directory.path}/attendance.pdf');
+              await file.writeAsBytes(pdfBytes);
+
+              if (await file.exists()) {
+                CustomSnackbar.show(
+                  context,
+                  'PDF saved to Downloads folder',
+                );
+              } else {
+                CustomSnackbar.show(context, 'Failed to save PDF.',
+                    isError: true);
+              }
+            } else {
+              CustomSnackbar.show(
+                context,
+                'Downloads folder not accessible. Please use Share option.',
+                isError: true,
+              );
+            }
+          } catch (e) {
+            CustomSnackbar.show(
+              context,
+              'Cannot save to Downloads folder on this Android version. Please use Share option.',
+              isError: true,
+            );
+          }
+        }
+      } else {
+        // For other platforms, use the original approach
+        String? outputPath;
+        try {
+          outputPath = await FilePicker.platform.getDirectoryPath();
+        } catch (e) {
+          print('FilePicker error: $e');
+        }
+
+        if (outputPath == null) {
           final directory = await getApplicationDocumentsDirectory();
           outputPath = directory.path;
         }
-      }
 
-      final file = File('$outputPath/attendance.pdf');
-      await file.writeAsBytes(await pdf.save());
+        final file = File('$outputPath/attendance.pdf');
+        await file.writeAsBytes(pdfBytes);
 
-      if (await file.exists()) {
-        CustomSnackbar.show(
-          context,
-          'PDF saved at $outputPath/attendance.pdf',
-        );
-      } else {
-        CustomSnackbar.show(context, 'Failed to save PDF.', isError: true);
+        if (await file.exists()) {
+          CustomSnackbar.show(
+            context,
+            'PDF saved at $outputPath/attendance.pdf',
+          );
+        } else {
+          CustomSnackbar.show(context, 'Failed to save PDF.', isError: true);
+        }
       }
     } catch (e) {
       print('Error generating PDF: $e');
       CustomSnackbar.show(context, 'Error generating PDF', isError: true);
     }
+  }
+
+  Future<String?> _showAndroidSaveOptions(BuildContext context) async {
+    return await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Save PDF'),
+          content: const Text(
+            'Choose how you want to save the PDF:\n\n'
+            '• Share: Works on all Android versions\n'
+            '• Downloads: May not work on Android 10+',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop('share'),
+              child: const Text('Share'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop('downloads'),
+              child: const Text('Downloads'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void notifyListenersCall() {

@@ -273,7 +273,7 @@ class LoginPage extends StatelessWidget {
                                     width:
                                         AppTheme.isDesktop(context) ? 12 : 8),
                                 Text(
-                                  '© 2024 Facial Attendance System',
+                                  '© 2025 Facial Attendance System',
                                   style: TextStyle(
                                     fontSize: AppTheme.getResponsiveFontSize(
                                         context,
