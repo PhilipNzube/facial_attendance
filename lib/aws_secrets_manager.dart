@@ -35,8 +35,6 @@ class AWSSecretsManager {
 
           // Convert the JSON string into a Map
           Map<String, String> credentials = json.decode(secretString);
-          print(
-              'AWS Credentials Retrieved: $credentials'); // Log the credentials
 
           return credentials;
         } else {
